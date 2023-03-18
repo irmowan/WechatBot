@@ -1,4 +1,4 @@
-import { ChatMessage } from "./types";
+import { ChatMessage } from "../src/types";
 const { Configuration, OpenAIApi } = require("openai")
 const { openaiApiKey } = require('./env')
 

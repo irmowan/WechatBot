@@ -6,9 +6,9 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "deprecated/helper.ts", "deprecated/chat.ts", "deprecated/chatUtil.ts"  ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "deprecated/*.spec.ts"
   ]
 }
