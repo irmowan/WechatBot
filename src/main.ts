@@ -7,7 +7,7 @@ import {ChatGPTBot} from "./chatgptBot"
 // log.level("silly");
 
 const wechatBot = WechatyBuilder.build({
-  name: "WechatBot",
+  name: "WechatBot3",
   puppet: new PuppetPadlocal({
     token: Config.padlocalToken
   }),
@@ -20,20 +20,17 @@ async function main() {
   wechatBot
     .on("scan", (qrcode, status) => {
       if (status === ScanStatus.Waiting && qrcode) {
+        console.log(`onScan: ${ScanStatus[status]}(${status})`);
+        console.log("\n==================================================================");
+        console.log("\n* Two ways to sign on with qr code");
+        console.log("\n1. Scan following QR code:\n");
+        require('qrcode-terminal').generate(qrcode, {small: true})  // show qrcode on console
+
         const qrcodeImageUrl = [
           'https://wechaty.js.org/qrcode/',
           // 'https://api.qrserver.com/v1/create-qr-code/?data=',
           encodeURIComponent(qrcode),
         ].join('')
-
-        console.log(`onScan: ${ScanStatus[status]}(${status})`);
-
-        console.log("\n==================================================================");
-        console.log("\n* Two ways to sign on with qr code");
-        console.log("\n1. Scan following QR code:\n");
-
-        require('qrcode-terminal').generate(qrcode, {small: true})  // show qrcode on console
-
         console.log(`\n2. Or open the link in your browser: ${qrcodeImageUrl}`);
         console.log("\n==================================================================\n");
       } else {
@@ -69,75 +66,5 @@ async function main() {
     );
   }
 }
+
 main();
-
-/*
-const bot = 
-  .on("scan", (qrcode, status) => {
-    if (status === ScanStatus.Waiting && qrcode) {
-      const qrcodeImageUrl = [
-        // 'https://wechaty.js.org/qrcode/',
-        'https://api.qrserver.com/v1/create-qr-code/?data=',
-        encodeURIComponent(qrcode),
-      ].join('')
-
-      log.info(LOGPRE, `onScan: ${ScanStatus[status]}(${status})`);
-
-      console.log("\n==================================================================");
-      console.log("\n* Two ways to sign on with qr code");
-      console.log("\n1. Scan following QR code:\n");
-
-      require('qrcode-terminal').generate(qrcode, {small: true})  // show qrcode on console
-
-      console.log(`\n2. Or open the link in your browser: ${qrcodeImageUrl}`);
-      console.log("\n==================================================================\n");
-    } else {
-      log.info(LOGPRE, `onScan: ${ScanStatus[status]}(${status})`);
-    }
-  })
-
-  .on("login", (user) => {
-    log.info(LOGPRE, `${user} login`);
-  })
-
-  .on("logout", (user, reason) => {
-    log.info(LOGPRE, `${user} logout, reason: ${reason}`);
-  })
-
-  .on("message", async (message) => {
-    log.info(LOGPRE, `on message: ${message.toString()}`);
-
-    await getMessagePayload(message);
-
-    // await dingDongBot(message);
-    await chatBot(message);
-  })
-
-  .on("room-invite", async (roomInvitation) => {
-    log.info(LOGPRE, `on room-invite: ${roomInvitation}`);
-  })
-
-  .on("room-join", (room, inviteeList, inviter, date) => {
-    log.info(LOGPRE, `on room-join, room:${room}, inviteeList:${inviteeList}, inviter:${inviter}, date:${date}`);
-  })
-
-  .on("room-leave", (room, leaverList, remover, date) => {
-    log.info(LOGPRE, `on room-leave, room:${room}, leaverList:${leaverList}, remover:${remover}, date:${date}`);
-  })
-
-  .on("room-topic", (room, newTopic, oldTopic, changer, date) => {
-    log.info(LOGPRE, `on room-topic, room:${room}, newTopic:${newTopic}, oldTopic:${oldTopic}, changer:${changer}, date:${date}`);
-  })
-
-  .on("friendship", (friendship) => {
-    log.info(LOGPRE, `on friendship: ${friendship}`);
-  })
-
-  .on("error", (error) => {
-    log.error(LOGPRE, `on error: ${error}`);
-  })
-
-bot.start().then(() => {
-  log.info(LOGPRE, "started.");
-});
-*/

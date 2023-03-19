@@ -89,7 +89,7 @@ export class ChatGPTBot {
       );
 
 	  // Run an initial test to confirm API works fine
-      await this.onChatGPT("Say Hello World");
+      await this.onChatGPT("0", "Say Hello World");
       console.log(`✅ ChatGPT starts success, ready to handle message!`);
     } catch (e) {
       console.error(`❌ ${e}`);
@@ -164,7 +164,7 @@ export class ChatGPTBot {
   }
 
   // create messages for ChatGPT API request
-  // TODO: store history chats for supporting context chat
+  // TODO: Use a map to store different history queue for different user
   messageQueue: ChatMessage[] = []
   maxLength = 30
   systemMessage: ChatMessage = {
@@ -189,7 +189,7 @@ export class ChatGPTBot {
   }
 
   // send question to ChatGPT with OpenAI API and get answer
-  private async onChatGPT(text: string): Promise<string> {
+  private async onChatGPT(key: string, text: string): Promise<string> {
     const inputMessages = this.createMessages(text);
     try {
       // config OpenAI API request body
@@ -249,16 +249,17 @@ export class ChatGPTBot {
   // reply to private message
   private async onPrivateMessage(talker: ContactInterface, text: string) {
     // get reply from ChatGPT
-    const chatgptReplyMessage = await this.onChatGPT(text);
+    const chatgptReplyMessage = await this.onChatGPT(talker.id, text);
 
     // send the ChatGPT reply to chat
     await this.reply(talker, chatgptReplyMessage);
+  
   }
 
   // reply to group message
   private async onGroupMessage(room: RoomInterface, talker: ContactInterface, text: string) {
     // get reply from ChatGPT
-    const chatgptReplyMessage = await this.onChatGPT(text);
+    const chatgptReplyMessage = await this.onChatGPT(room.id, text);
 
     // the whole reply consist of: talker name and bot reply
     const wholeReplyMessage = `@${talker.name()} ${chatgptReplyMessage}`;
@@ -304,6 +305,10 @@ export class ChatGPTBot {
       await message.say(myReply);
       console.log(`🎯 Customized task triggered: ${myTaskContent}`);
       console.log(`🤖️ ChatGPT says: ${myReply}`);
+      return;
+    }
+    if (message.text().includes("我帅吗")) {
+      await message.say("你最帅，你天下第一帅")
       return;
     }
   }
